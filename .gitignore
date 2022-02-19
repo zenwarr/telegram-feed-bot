@@ -1,3 +1,5 @@
 .idea
 data/posts.db
+data/.env
+data/config.yaml
 __pycache__

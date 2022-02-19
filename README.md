@@ -28,6 +28,11 @@ Updated config is going to be used on next update.
 ## Bot configuration
 
 You have to set bot token in `data/.env` file.
+For example:
+
+```dotenv
+TELEGRAM_BOT_TOKEN=my_telegram_bot_token
+```
 
 ## Running it
 
