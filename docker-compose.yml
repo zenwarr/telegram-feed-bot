@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: .
+    volumes:
+      - ./data:/data
+    environment:
+      - ENV_FILE_PATH=/data/.env
