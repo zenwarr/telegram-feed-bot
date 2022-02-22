@@ -3,6 +3,8 @@ import sys
 from message import Message
 import re
 import html2text
+import html
+import googletrans
 
 
 def get_content_filter(name: str | None):
@@ -36,6 +38,18 @@ def habr_content_filter(entry):
     return Message(type="text", text_parts=[entry.title, text, link])
 
 
+def generic_translate_content_filter(entry):
+    msg = generic_content_filter(entry)
+    msg.text_parts = [translate(t) for t in msg.text_parts]
+
+
+translator = googletrans.Translator()
+
+
+def translate(text):
+    translator.translate(text, src="en", dest="ru")
+
+
 h = html2text.HTML2Text()
 h.ignore_tables = True
 h.ignore_images = True
@@ -65,5 +79,7 @@ def clean_text(text):
 
         # split into lines, trim lines and join back
         groups[i] = " ".join(line.strip() for line in groups[i].split("\n"))
+
+        groups[i] = html.unescape(groups[i])
 
     return "\n\n".join(groups)
