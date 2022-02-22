@@ -41,6 +41,7 @@ def habr_content_filter(entry):
 def generic_translate_content_filter(entry):
     msg = generic_content_filter(entry)
     msg.text_parts = [translate(t) for t in msg.text_parts]
+    return msg
 
 
 translator = googletrans.Translator()
