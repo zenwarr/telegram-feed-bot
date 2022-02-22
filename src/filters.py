@@ -4,7 +4,6 @@ from message import Message
 import re
 import html2text
 import html
-import googletrans
 
 
 def get_content_filter(name: str | None):
@@ -38,19 +37,6 @@ def habr_content_filter(entry):
     return Message(type="text", text_parts=[entry.title, text, link])
 
 
-def generic_translate_content_filter(entry):
-    msg = generic_content_filter(entry)
-    msg.text_parts = [translate(t) for t in msg.text_parts]
-    return msg
-
-
-translator = googletrans.Translator()
-
-
-def translate(text):
-    translator.translate(text, src="en", dest="ru")
-
-
 h = html2text.HTML2Text()
 h.ignore_tables = True
 h.ignore_images = True
@@ -73,7 +59,7 @@ def clean_text(text):
 
     for i in range(len(groups)):
         # remove newlines
-        groups[i] = re.sub("\n", "", groups[i])
+        groups[i] = re.sub("\n", " ", groups[i])
 
         # replace multiple spaces not at the start of line
         groups[i] = re.sub(" +", " ", groups[i])
