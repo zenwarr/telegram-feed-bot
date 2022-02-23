@@ -54,17 +54,32 @@ def fetch_feed(feed, sender=None):
             print('malformed post "{}" from "{}", content is empty'.format(post_id, feed_id))
             continue
 
-        match_re = feed.get("match")
-        if match_re is not None:
-            full_msg_text = msg.build_text()
-            if not re.match(match_re, full_msg_text, re.MULTILINE & re.IGNORECASE):
-                print('ignoring post "{}" from "{}", does not match pattern'.format(post_id, feed_id))
+        if not matches_conditions(feed, msg):
+            print('ignoring post "{}" from "{}", does not match conditions'.format(post_id, feed_id))
+            continue
 
         print('sending post "{}" from "{}"'.format(post_id, feed_id))
         if (sender or send_msg)(msg, feed.get("channel")):
             add_post(feed_id, post_id)
 
     update_fetch_date(feed_id, new_last_fetch)
+
+
+def matches_conditions(feed, msg):
+    full_msg_text = msg.build_text()
+
+    match_re = feed.get("should_match")
+    if match_re is not None:
+        if not re.match(match_re, full_msg_text, re.MULTILINE & re.IGNORECASE):
+            return False
+
+    not_match_re = feed.get("should_not_match")
+    if not_match_re is not None:
+        if re.match(match_re, full_msg_text, re.MULTILINE & re.IGNORECASE):
+            return False
+
+    return True
+
 
 
 @dataclass
