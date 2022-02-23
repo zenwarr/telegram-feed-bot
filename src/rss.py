@@ -33,7 +33,7 @@ def fetch_feed(feed, sender=None):
     for entry in entries.entries:
         post_id = entry.get("link")
         if is_post_sent(feed_id, post_id):
-            print('ignoring post "{}" from "{}", already sent'.format(post_id, feed_id))
+            print('ignoring post "{}", already sent'.format(post_id, feed_id))
             continue
 
         title = entry.get("title")
@@ -51,14 +51,14 @@ def fetch_feed(feed, sender=None):
         content_filter = get_content_filter(feed.get("filter"))
         msg = content_filter(FeedEntry(title=title, summary=summary, content=content, link=link))
         if msg is None:
-            print('malformed post "{}" from "{}", content is empty'.format(post_id, feed_id))
+            print('malformed post "{}", content is empty'.format(post_id, feed_id))
             continue
 
         if not matches_conditions(feed, msg):
-            print('ignoring post "{}" from "{}", does not match conditions'.format(post_id, feed_id))
+            print('ignoring post "{}", does not match conditions'.format(post_id, feed_id))
             continue
 
-        print('sending post "{}" from "{}"'.format(post_id, feed_id))
+        print('sending post "{}"'.format(post_id, feed_id))
         if (sender or send_msg)(msg, feed.get("channel")):
             add_post(feed_id, post_id)
 
@@ -70,12 +70,12 @@ def matches_conditions(feed, msg):
 
     match_re = feed.get("should_match")
     if match_re is not None:
-        if not re.match(match_re, full_msg_text, re.MULTILINE & re.IGNORECASE):
+        if not re.search(match_re, full_msg_text, re.IGNORECASE):
             return False
 
     not_match_re = feed.get("should_not_match")
     if not_match_re is not None:
-        if re.match(not_match_re, full_msg_text, re.MULTILINE & re.IGNORECASE):
+        if re.search(not_match_re, full_msg_text, re.IGNORECASE):
             return False
 
     return True
