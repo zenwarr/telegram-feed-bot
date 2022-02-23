@@ -11,7 +11,8 @@ feeds:
 - url: https://xkcd.com/rss.xml # RSS feed url 
   filter: xkcd # Filter to convert a feed entry to a telegram message (optional)
   channel: "@xkcd" # Handle of a telegram channel to post to. You can reuse same channel for multiple feeds.
-  
+  match: "^xkcd" # Regex to match message text (optional)
+
 reddit:
 - name: funny # Name of a subreddit
   channel: "@funny" # Handle of a telegram channel to post to. You can reuse same channel for multiple subreddits.

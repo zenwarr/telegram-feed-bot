@@ -8,7 +8,7 @@ class Message:
     text_parts: list[str] = None
     res_url: str = None
 
-    def build_text(self, max_length):
+    def build_text(self, max_length=None):
         if self.text_parts is not None:
             title, content, link = self.text_parts
             title = f'*{title}*' if title else ''
@@ -21,7 +21,7 @@ class Message:
             if link and content:
                 min_length += len(link) + 2
 
-            if len(content) + min_length > max_length:
+            if max_length is not None and len(content) + min_length > max_length:
                 content = content[:max_length - min_length] + '...'
 
             parts = list(filter(lambda x: x, [title, content, link]))

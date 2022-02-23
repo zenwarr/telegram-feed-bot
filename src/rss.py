@@ -53,6 +53,12 @@ def fetch_feed(feed, sender=None):
             print('malformed post "{}" from "{}", content is empty'.format(post_id, feed_id))
             continue
 
+        match_re = feed.get("match")
+        if match_re is not None:
+            full_msg_text = msg.build_text()
+            if not match_re.search(full_msg_text):
+                print('ignoring post "{}" from "{}", does not match pattern'.format(post_id, feed_id))
+
         print('sending post "{}" from "{}"'.format(post_id, feed_id))
         if (sender or send_msg)(msg, feed.get("channel")):
             add_post(feed_id, post_id)
