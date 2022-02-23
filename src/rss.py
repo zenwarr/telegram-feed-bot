@@ -75,7 +75,7 @@ def matches_conditions(feed, msg):
 
     not_match_re = feed.get("should_not_match")
     if not_match_re is not None:
-        if re.match(match_re, full_msg_text, re.MULTILINE & re.IGNORECASE):
+        if re.match(not_match_re, full_msg_text, re.MULTILINE & re.IGNORECASE):
             return False
 
     return True
