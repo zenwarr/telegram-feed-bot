@@ -1,4 +1,5 @@
 import datetime
+import re
 from dataclasses import dataclass
 import feedparser
 from config import get_config
@@ -56,7 +57,7 @@ def fetch_feed(feed, sender=None):
         match_re = feed.get("match")
         if match_re is not None:
             full_msg_text = msg.build_text()
-            if not match_re.search(full_msg_text):
+            if not re.match(match_re, full_msg_text, re.MULTILINE & re.IGNORECASE):
                 print('ignoring post "{}" from "{}", does not match pattern'.format(post_id, feed_id))
 
         print('sending post "{}" from "{}"'.format(post_id, feed_id))
