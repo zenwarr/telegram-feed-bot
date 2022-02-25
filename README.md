@@ -12,7 +12,7 @@ feeds:
   filter: xkcd # Filter to convert a feed entry to a telegram message (optional)
   channel: "@xkcd" # Handle of a telegram channel to post to. You can reuse same channel for multiple feeds.
   should_match: "^xkcd" # Regexp to not post messages not matching it (optional)
-  should_not_match: "^xkcd" # Regexp to not post messages matching it (optional)
+  should_not_match: "^xkcd" # Regexp to not post messages matching it (optional). It can be an array of patterns.
 
 reddit:
 - name: funny # Name of a subreddit
