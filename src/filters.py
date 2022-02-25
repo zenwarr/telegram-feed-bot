@@ -48,7 +48,7 @@ def generic_content_filter(entry):
 
     link = entry.link
 
-    return Message(type="text", text_parts=[entry.title, text, link])
+    return Message(type="text", text_parts=[clean_title(entry.title), text, link])
 
 
 def clean_text(text):
@@ -70,3 +70,10 @@ def clean_text(text):
         groups[i] = html.unescape(groups[i])
 
     return "\n\n".join(groups)
+
+
+def clean_title(text):
+    text = text or ""
+    text = text.strip()
+    text = html.unescape(text)
+    return text
