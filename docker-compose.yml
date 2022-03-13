@@ -8,3 +8,4 @@ services:
       - ./data:/data
     environment:
       - ENV_FILE_PATH=/data/.env
+    restart: unless-stopped
