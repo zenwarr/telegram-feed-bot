@@ -16,7 +16,7 @@ if env_file_path is not None:
 fetch_feeds()
 
 schedule.every(10).minutes.do(fetch_feeds)
-schedule.every().hour.do(fetch_reddit_feeds)
+schedule.every().hour.at(":05").do(fetch_reddit_feeds)
 
 while True:
     schedule.run_pending()
