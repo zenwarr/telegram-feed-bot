@@ -54,7 +54,6 @@ def fetch_subreddit(feed, sender=None):
 
     for post in posts:
         if is_post_sent(reddit_name, post.get("link")):
-            print('ignoring post "{}" from "{}", already sent'.format(post.get("link"), reddit_name))
             continue
 
         print('sending post "{}" from "{}"'.format(post.get("link"), reddit_name))

@@ -33,7 +33,6 @@ def fetch_feed(feed, sender=None):
     for entry in entries.entries:
         post_id = entry.get("link")
         if is_post_sent(feed_id, post_id):
-            print('ignoring post "{}", already sent'.format(post_id, feed_id))
             continue
 
         title = entry.get("title")
@@ -55,7 +54,6 @@ def fetch_feed(feed, sender=None):
             continue
 
         if not matches_conditions(feed, msg):
-            print('ignoring post "{}", does not match conditions'.format(post_id, feed_id))
             continue
 
         print('sending post "{}"'.format(post_id, feed_id))
