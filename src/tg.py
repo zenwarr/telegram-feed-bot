@@ -1,7 +1,8 @@
 import time
 
-import telegram
 import os
+
+import telegram
 from telegram.ext import ExtBot
 from message import Message
 from typing import Callable
@@ -20,25 +21,28 @@ def send_msg(msg: Message, channel: str) -> bool:
     tg_bot = get_tg_bot()
     queue = get_tg_queue()
 
+    text, entities = msg.get_text_with_entities(
+        telegram.MAX_MESSAGE_LENGTH if msg.type == 'text' else telegram.MAX_CAPTION_LENGTH)
+
     if msg.type == "text":
         queue.add(lambda: tg_bot.send_message(chat_id=channel,
-                                              text=msg.build_text(telegram.constants.MAX_MESSAGE_LENGTH),
-                                              parse_mode='Markdown'))
+                                              text=text,
+                                              entities=entities))
     elif msg.type == "image" and not msg.res_url.endswith(".gif"):
         queue.add(lambda: tg_bot.send_photo(chat_id=channel,
                                             photo=msg.res_url,
-                                            caption=msg.build_text(telegram.constants.MAX_CAPTION_LENGTH),
-                                            parse_mode='Markdown'))
+                                            caption=text,
+                                            entities=entities))
     elif msg.type == "image" and msg.res_url.endswith(".gif"):
         queue.add(lambda: tg_bot.send_animation(chat_id=channel,
                                                 animation=msg.res_url,
-                                                caption=msg.build_text(telegram.constants.MAX_CAPTION_LENGTH),
-                                                parse_mode='Markdown'))
+                                                caption=text,
+                                                entities=entities))
     elif msg.type == "video":
         queue.add(lambda: tg_bot.send_video(chat_id=channel,
                                             video=msg.res_url,
-                                            caption=msg.build_text(telegram.constants.MAX_CAPTION_LENGTH),
-                                            parse_mode='Markdown'))
+                                            caption=text,
+                                            entities=entities))
 
     return True
 

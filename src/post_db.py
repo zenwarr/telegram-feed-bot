@@ -16,6 +16,12 @@ def get_post_db():
 get_post_db.value = None
 
 
+def close_db():
+    if get_post_db.value is not None:
+        get_post_db.value.close()
+        get_post_db.value = None
+
+
 def init_db_structure(db):
     cur = db.cursor()
 

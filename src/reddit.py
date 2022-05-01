@@ -57,8 +57,7 @@ def fetch_subreddit(feed, sender=None):
             continue
 
         print('sending post "{}" from "{}"'.format(post.get("link"), reddit_name))
-        text_parts = [post.get("title"), None, post.get("permalink")]
-        msg = Message(type=post.get("link_type"), res_url=post.get("link"), text_parts=text_parts)
+        msg = Message(type=post.get("link_type"), res_url=post.get("link"), title=post.get("title"), text="", source_url=post.get("permalink"))
         if (sender or send_msg)(msg, feed.get("channel")):
             add_post(reddit_name, post.get("link"))
 

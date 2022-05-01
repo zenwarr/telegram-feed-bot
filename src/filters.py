@@ -2,12 +2,11 @@ from bs4 import BeautifulSoup
 import sys
 from message import Message
 import re
-import html2text
-import html
+from generic_filter import generic_content_filter
 
 
 def get_content_filter(name: str | None):
-    if name is None:
+    if name is None or name == "generic":
         return generic_content_filter
     return getattr(sys.modules[__name__], name + "_content_filter")
 
@@ -19,7 +18,7 @@ def xkcd_content_filter(entry):
     if image is not None:
         image_url = image.get("src")
         image_alt = image.get("alt")
-        return Message(type="image", text_parts=[entry.title, image_alt, entry.link], res_url=image_url)
+        return Message(type="image", title=entry.title, source_url=entry.link, text=image_alt, res_url=image_url)
 
 
 # Example filter: parse html and extract text
@@ -34,46 +33,4 @@ def habr_content_filter(entry):
     # remove url parameters from link
     link = re.sub("\?.*", "", link)
 
-    return Message(type="text", text_parts=[entry.title, text, link])
-
-
-h = html2text.HTML2Text()
-h.ignore_tables = True
-h.ignore_images = True
-
-
-def generic_content_filter(entry):
-    text = h.handle(entry.summary)
-    text = clean_text(text)
-
-    link = entry.link
-
-    return Message(type="text", text_parts=[clean_title(entry.title), text, link])
-
-
-def clean_text(text):
-    groups = re.split("\n[\s]*\n+", text)
-
-    # remove empty groups
-    groups = [g for g in groups if g.strip() != ""]
-
-    for i in range(len(groups)):
-        # remove newlines
-        groups[i] = re.sub("\n", " ", groups[i])
-
-        # replace multiple spaces not at the start of line
-        groups[i] = re.sub(" +", " ", groups[i])
-
-        # split into lines, trim lines and join back
-        groups[i] = " ".join(line.strip() for line in groups[i].split("\n"))
-
-        groups[i] = html.unescape(groups[i])
-
-    return "\n\n".join(groups)
-
-
-def clean_title(text):
-    text = text or ""
-    text = text.strip()
-    text = html.unescape(text)
-    return text
+    return Message(type="text", title=entry.title, source_url=link, text=text)

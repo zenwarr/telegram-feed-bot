@@ -64,7 +64,7 @@ def fetch_feed(feed, sender=None):
 
 
 def matches_conditions(feed, msg):
-    full_msg_text = msg.build_text()
+    full_msg_text, entities = msg.get_text_with_entities()
 
     match_re = feed.get("should_match")
     if match_re is not None:
