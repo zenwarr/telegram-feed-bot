@@ -5,7 +5,7 @@ import os
 import telegram
 from telegram.ext import ExtBot
 from message import Message
-from typing import Callable
+from post_db import add_post
 
 
 def get_tg_bot() -> ExtBot:
@@ -17,52 +17,53 @@ def get_tg_bot() -> ExtBot:
 get_tg_bot.value = None
 
 
-def send_msg(msg: Message, channel: str) -> bool:
-    tg_bot = get_tg_bot()
+def queue_msg(msg: Message, channel: str):
     queue = get_tg_queue()
-
-    text, entities = msg.get_text_with_entities(
-        telegram.MAX_MESSAGE_LENGTH if msg.type == 'text' else telegram.MAX_CAPTION_LENGTH)
-
-    if msg.type == "text":
-        queue.add(lambda: tg_bot.send_message(chat_id=channel,
-                                              text=text,
-                                              entities=entities))
-    elif msg.type == "image" and not msg.res_url.endswith(".gif"):
-        queue.add(lambda: tg_bot.send_photo(chat_id=channel,
-                                            photo=msg.res_url,
-                                            caption=text,
-                                            entities=entities))
-    elif msg.type == "image" and msg.res_url.endswith(".gif"):
-        queue.add(lambda: tg_bot.send_animation(chat_id=channel,
-                                                animation=msg.res_url,
-                                                caption=text,
-                                                entities=entities))
-    elif msg.type == "video":
-        queue.add(lambda: tg_bot.send_video(chat_id=channel,
-                                            video=msg.res_url,
-                                            caption=text,
-                                            entities=entities))
-
-    return True
+    queue.add(msg, channel)
 
 
 class TelegramQueue:
     def __init__(self):
         self.queue = []
 
-    def add(self, callback: Callable[[], None]):
-        self.queue.append(callback)
+    def add(self, msg: Message, channel: str):
+        self.queue.append((msg, channel))
 
     def process(self):
-        for callback in self.queue:
+        for msg, channel in self.queue:
             try:
-                callback()
+                self.send_msg(msg, channel)
+                add_post(msg.feed, msg.post_id)
             except Exception as e:
                 print(f"Error while sending message: {e}")
+                add_post(msg.feed, msg.post_id, str(e))
 
             time.sleep(3)
         self.queue = []
+
+    def send_msg(self, msg: Message, channel: str):
+        text, entities = msg.get_text_with_entities(telegram.MAX_MESSAGE_LENGTH if msg.type == 'text' else telegram.MAX_CAPTION_LENGTH)
+        tg_bot = get_tg_bot()
+
+        if msg.type == "text":
+            tg_bot.send_message(chat_id=channel,
+                                text=text,
+                                entities=entities)
+        elif msg.type == "image" and not msg.res_url.endswith(".gif"):
+            tg_bot.send_photo(chat_id=channel,
+                              photo=msg.res_url,
+                              caption=text,
+                              entities=entities)
+        elif msg.type == "image" and msg.res_url.endswith(".gif"):
+            tg_bot.send_animation(chat_id=channel,
+                                  animation=msg.res_url,
+                                  caption=text,
+                                  entities=entities)
+        elif msg.type == "video":
+            tg_bot.send_video(chat_id=channel,
+                              video=msg.res_url,
+                              caption=text,
+                              entities=entities)
 
 
 def get_tg_queue():

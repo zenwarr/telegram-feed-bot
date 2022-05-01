@@ -3,7 +3,7 @@ import requests
 from config import get_config
 from message import Message
 from post_db import is_post_sent, add_post
-from tg import send_msg, get_tg_queue
+from tg import queue_msg, get_tg_queue
 from urllib.parse import urlparse
 
 
@@ -48,7 +48,7 @@ def fetch_reddit_feeds():
     print("fetching reddit feeds done, waiting till next scheduled run")
 
 
-def fetch_subreddit(feed, sender=None):
+def fetch_subreddit(feed):
     reddit_name = feed.get("name")
     posts = get_top_subreddit_posts(reddit_name, 40)
 
@@ -58,8 +58,10 @@ def fetch_subreddit(feed, sender=None):
 
         print('sending post "{}" from "{}"'.format(post.get("link"), reddit_name))
         msg = Message(type=post.get("link_type"), res_url=post.get("link"), title=post.get("title"), text="", source_url=post.get("permalink"))
-        if (sender or send_msg)(msg, feed.get("channel")):
-            add_post(reddit_name, post.get("link"))
+        msg.feed = reddit_name
+        msg.post_id = post.get("link")
+
+        queue_msg(msg, feed.get("channel"))
 
         break
 

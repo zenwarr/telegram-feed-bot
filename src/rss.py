@@ -5,7 +5,7 @@ import feedparser
 from config import get_config
 from filters import get_content_filter
 from post_db import is_post_sent, add_post, update_fetch_date
-from tg import send_msg, get_tg_queue
+from tg import queue_msg, get_tg_queue
 
 
 def fetch_feeds():
@@ -23,7 +23,7 @@ def fetch_feeds():
     print("fetching feeds done, waiting till next scheduled run")
 
 
-def fetch_feed(feed, sender=None):
+def fetch_feed(feed):
     feed_id = feed.get("id") or feed.get("url")
     print("fetching feed {}".format(feed_id))
 
@@ -56,9 +56,11 @@ def fetch_feed(feed, sender=None):
         if not matches_conditions(feed, msg):
             continue
 
+        msg.feed = feed_id
+        msg.post_id = post_id
+
         print('sending post "{}"'.format(post_id, feed_id))
-        if (sender or send_msg)(msg, feed.get("channel")):
-            add_post(feed_id, post_id)
+        queue_msg(msg, feed.get("channel"))
 
     update_fetch_date(feed_id, new_last_fetch)
 
