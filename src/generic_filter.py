@@ -3,6 +3,7 @@ import telegram
 from message import Message
 from message_with_entities import MessageWithEntities
 from utils import utf16_code_units_in_text
+from urllib.parse import urlparse
 
 
 def generic_content_filter(entry):
@@ -80,7 +81,6 @@ def append_space_if_missing(text):
     return text + " " if not (text.endswith(" ") or text.endswith("\n")) else text
 
 
-
 inline_tags = ["a", "b", "i", "em", "strong", "span", "sub", "sup", "u", "small", "big", "del", "ins", "mark", "code",
                "samp", "kbd", "var", "cite", "abbr", "dfn", "time", "span"]
 
@@ -98,6 +98,7 @@ tag_modifiers = {
     "s": "strikethrough",
     "code": "code",
     "em": "italic",
+    "pre": "pre",
 }
 
 
@@ -105,6 +106,21 @@ def get_modifier_for_tag(node, offset):
     if node.name in tag_modifiers:
         return telegram.MessageEntity(type=tag_modifiers[node.name], offset=offset, length=0)
     elif node.name == "a":
-        return telegram.MessageEntity(type=telegram.MessageEntity.TEXT_LINK, offset=offset, url=node.get("href"), length=0)
+        link_url = node.get("href")
+        if not is_valid_url(link_url):
+            return None
+
+        return telegram.MessageEntity(type=telegram.MessageEntity.TEXT_LINK, offset=offset, url=link_url, length=0)
+
     return None
 
+
+def is_valid_url(url):
+    if not url:
+        return False
+
+    try:
+        result = urlparse(url)
+        return result.scheme in ["http", "https"] and result.netloc != ""
+    except:
+        return False
