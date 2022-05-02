@@ -17,6 +17,7 @@ class Message:
     res_url: str = None
     feed: str = None
     post_id: str = None
+    link_preview: bool = True
 
     def get_text_with_entities(self, max_length=None):
         entities = []

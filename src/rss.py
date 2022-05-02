@@ -58,6 +58,7 @@ def fetch_feed(feed):
 
         msg.feed = feed_id
         msg.post_id = post_id
+        msg.link_preview = feed.get("link_preview", True)
 
         queue_msg(msg, feed.get("channel"))
 
