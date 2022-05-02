@@ -4,7 +4,7 @@ import telegram
 
 from utils import utf16_code_units_in_text
 
-ELLIPSIS = "..."
+ELLIPSIS = "…"
 ELLIPSIS_CODEPOINTS = utf16_code_units_in_text(ELLIPSIS)
 
 
@@ -32,7 +32,7 @@ class Message:
 
         total_length = len(title) + len(content) + len(footer)
         if max_length is not None and total_length > max_length:
-            content = content[:max_length - len(footer) - len(title) - len(ELLIPSIS)] + '...'
+            content = content[:max_length - len(footer) - len(title) - len(ELLIPSIS)] + ELLIPSIS
 
         if isinstance(self.text, MessageWithEntities):
             content_codeunits = utf16_code_units_in_text(content)
