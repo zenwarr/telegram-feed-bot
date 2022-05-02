@@ -2,6 +2,6 @@ from dataclasses import dataclass
 
 
 @dataclass()
-class MessageWithEntities:
+class TextWithEntities:
     text: str
     entities: list

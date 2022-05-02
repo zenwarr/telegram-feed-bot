@@ -1,8 +1,10 @@
+import telegram
 from bs4 import BeautifulSoup
 import sys
 from message import Message
 import re
-from generic_filter import generic_content_filter
+from generic_filter import generic_content_filter, html_to_text_with_entities, rtrim_text
+from utils import utf16_codeunit_index_to_pos
 
 
 def get_content_filter(name: str | None):
@@ -21,13 +23,23 @@ def xkcd_content_filter(entry):
         return Message(type="image", title=entry.title, source_url=entry.link, text=image_alt, res_url=image_url)
 
 
+HABR_LINK_TEXTS = ["Читать далее", "Читать дальше →"]
+
+
 # Example filter: parse html and extract text
 def habr_content_filter(entry):
-    doc = BeautifulSoup(entry.summary, 'html.parser')
-    text = doc.get_text()
-    text = re.sub("Читать далее", "", text)
-    text = re.sub("Читать дальше →", "", text)
-    text = text.strip()
+    text = html_to_text_with_entities(entry.summary)
+
+    for e in text.entities:
+        if e.type == telegram.MessageEntity.TEXT_LINK:
+            e_start = utf16_codeunit_index_to_pos(text.text, e.offset)
+            e_end = utf16_codeunit_index_to_pos(text.text, e.offset + e.length)
+            e_text = text.text[e_start:e_end]
+            if e_text in HABR_LINK_TEXTS:
+                del text.entities[text.entities.index(e)]
+                text.text = text.text[:e_start] + text.text[e_end:]
+
+    rtrim_text(text)
 
     link = entry.link
     # remove url parameters from link

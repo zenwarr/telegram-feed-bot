@@ -1,8 +1,8 @@
 from bs4 import BeautifulSoup
 import telegram
 from message import Message
-from message_with_entities import MessageWithEntities
-from utils import utf16_code_units_in_text
+from text_with_entities import TextWithEntities
+from utils import utf16_codeunits_in_text
 from urllib.parse import urlparse
 
 
@@ -19,7 +19,7 @@ def generic_content_filter(entry):
 
 def html_to_text_with_entities(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
-    result = MessageWithEntities(text="", entities=[])
+    result = TextWithEntities(text="", entities=[])
 
     def walker(node):
         if isinstance(node, str):
@@ -27,13 +27,13 @@ def html_to_text_with_entities(html_content):
         elif node.name == "br":
             result.text = append_newline(result.text)
         else:
-            mod_start = utf16_code_units_in_text(result.text)
+            mod_start = utf16_codeunits_in_text(result.text)
             cur_entity = get_modifier_for_tag(node, mod_start)
 
             for child in node.children:
                 walker(child)
 
-            mod_end = utf16_code_units_in_text(result.text)
+            mod_end = utf16_codeunits_in_text(result.text)
             if cur_entity is not None and mod_start != mod_end:
                 cur_entity.length = mod_end - mod_start
                 result.entities.append(cur_entity)
@@ -43,14 +43,19 @@ def html_to_text_with_entities(html_content):
 
     walker(soup)
 
-    result.text = result.text.rstrip()
-    new_result_codepoints = utf16_code_units_in_text(result.text)
-    result.entities = list(filter(lambda e: e.offset < new_result_codepoints, result.entities))
-    for e in result.entities:
-        if e.offset + e.length > new_result_codepoints:
-            e.length = new_result_codepoints - e.offset
+    rtrim_text(result)
 
     return result
+
+
+def rtrim_text(t: TextWithEntities):
+    t.text = t.text.rstrip()
+
+    codeunit_count = utf16_codeunits_in_text(t.text)
+    t.entities = list(filter(lambda e: e.offset < codeunit_count, t.entities))
+    for e in t.entities:
+        if e.offset + e.length > codeunit_count:
+            e.length = codeunit_count - e.offset
 
 
 def append_newline(text):
