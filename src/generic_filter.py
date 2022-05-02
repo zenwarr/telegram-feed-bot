@@ -101,7 +101,7 @@ INLINE_TAGS = ["a", "b", "i", "em", "strong", "span", "sub", "sup", "u", "small"
                "samp", "kbd", "var", "cite", "abbr", "dfn", "time", "span"]
 
 IGNORE_TAGS = ["script", "style", "noscript", "meta", "link", "img", "input", "button", "label", "select", "option",
-               "figure", "video", "audio", "figcaption", "canvas", "map", "area", "svg", "math", "object", "embed","]
+               "figure", "video", "audio", "figcaption", "canvas", "map", "area", "svg", "math", "object", "embed"]
 
 
 def is_block_tag(node):
