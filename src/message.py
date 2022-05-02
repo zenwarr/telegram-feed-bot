@@ -28,8 +28,7 @@ class Message:
                                                    length=utf16_codeunits_in_text(title)))
 
         footer = self._get_footer()
-
-        content = self.text if isinstance(self.text, str) else self.text.text
+        content = self._get_text()
 
         total_length = len(title) + len(content) + len(footer)
         if max_length is not None and total_length > max_length:
@@ -56,11 +55,14 @@ class Message:
 
         return title + content + footer, entities
 
+    def _get_text(self):
+        return self.text if isinstance(self.text, str) else self.text.text
+
     def _get_title(self):
         if not self.title:
             return ''
 
-        return f'{self.title}\n\n'
+        return f'{self.title}\n\n' if self._get_text() else self.title
 
     def _get_footer(self):
         if not self.source_url:
