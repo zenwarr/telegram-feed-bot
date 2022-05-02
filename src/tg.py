@@ -55,20 +55,17 @@ def send_msg(msg: Message, channel: str):
         tg_bot.send_photo(chat_id=channel,
                           photo=msg.res_url,
                           caption=text,
-                          entities=entities,
-                          disable_web_page_preview=not msg.link_preview)
+                          caption_entities=entities)
     elif msg.type == "image" and msg.res_url.endswith(".gif"):
         tg_bot.send_animation(chat_id=channel,
                               animation=msg.res_url,
                               caption=text,
-                              entities=entities,
-                              disable_web_page_preview=not msg.link_preview)
+                              caption_entities=entities)
     elif msg.type == "video":
         tg_bot.send_video(chat_id=channel,
                           video=msg.res_url,
                           caption=text,
-                          entities=entities,
-                          disable_web_page_preview=not msg.link_preview)
+                          caption_entities=entities)
 
 
 def get_tg_queue():
