@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment, Tag
 import telegram
 from message import Message
 from text_with_entities import TextWithEntities
@@ -22,7 +22,9 @@ def html_to_text_with_entities(html_content):
     result = TextWithEntities(text="", entities=[])
 
     def walker(node):
-        if isinstance(node, str):
+        if isinstance(node, Comment) or (isinstance(node, Tag) and node.name in IGNORE_TAGS):
+            return
+        elif isinstance(node, str):
             result.text = append_with_collapsing_space(result.text, node)
         elif node.name == "br":
             result.text = append_newline(result.text)
@@ -95,15 +97,18 @@ def append_space_if_missing(text):
     return text + " " if not (text.endswith(" ") or text.endswith("\n")) else text
 
 
-inline_tags = ["a", "b", "i", "em", "strong", "span", "sub", "sup", "u", "small", "big", "del", "ins", "mark", "code",
+INLINE_TAGS = ["a", "b", "i", "em", "strong", "span", "sub", "sup", "u", "small", "big", "del", "ins", "mark", "code",
                "samp", "kbd", "var", "cite", "abbr", "dfn", "time", "span"]
+
+IGNORE_TAGS = ["script", "style", "noscript", "meta", "link", "img", "input", "button", "label", "select", "option",
+               "figure", "video", "audio", "figcaption", "canvas", "map", "area", "svg", "math", "object", "embed","]
 
 
 def is_block_tag(node):
     if node is None or node.name in ["[document]", "html", "body"]:
         return False
 
-    return node.name not in inline_tags
+    return node.name not in INLINE_TAGS
 
 
 tag_modifiers = {
