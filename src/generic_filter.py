@@ -7,12 +7,13 @@ from urllib.parse import urlparse
 
 
 def generic_content_filter(entry):
-    title_msg = html_to_text_with_entities(
-        entry.content if entry.content and len(entry.content) > len(entry.summary) else entry.summary)
+    title_msg = html_to_text_with_entities(entry.title)
+
+    raw_content = entry.content if entry.content and len(entry.content) > len(entry.summary) else entry.summary
 
     return Message(type="text",
                    title=title_msg.text,
-                   text=html_to_text_with_entities(entry.summary),
+                   text=html_to_text_with_entities(raw_content),
                    source_url=entry.link)
 
 
