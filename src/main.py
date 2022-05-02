@@ -17,8 +17,8 @@ def exit_program():
     sys.exit(0)
 
 
-signal.signal(signal.SIGTERM, lambda: exit_program())
-signal.signal(signal.SIGINT, lambda: exit_program())
+signal.signal(signal.SIGTERM, lambda a, b: exit_program())
+signal.signal(signal.SIGINT, lambda a, b: exit_program())
 
 env_file_path = os.environ.get("ENV_FILE_PATH")
 if env_file_path is not None:
