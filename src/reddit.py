@@ -38,7 +38,7 @@ def fetch_reddit_feeds():
     print("fetching reddit feeds")
 
     config = get_config()
-    for feed in config['reddit']:
+    for feed in config.get('reddit', []):
         try:
             fetch_subreddit(feed)
         except Exception as e:

@@ -12,7 +12,7 @@ def fetch_feeds():
     print("fetching feeds")
 
     config = get_config()
-    for feed in config['feeds']:
+    for feed in config.get('feeds', []):
         try:
             fetch_feed(feed)
         except Exception as e:
