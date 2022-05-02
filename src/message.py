@@ -22,7 +22,7 @@ class Message:
         entities = []
 
         title = self._get_title()
-        if len(title):
+        if title:
             entities.append(telegram.MessageEntity(type=telegram.MessageEntity.BOLD, offset=0,
                                                    length=utf16_code_units_in_text(title)))
 
@@ -37,7 +37,7 @@ class Message:
         if isinstance(self.text, MessageWithEntities):
             content_codeunits = utf16_code_units_in_text(content)
             for e in self.text.entities:
-                if e.offset < content_codeunits:
+                if e.offset < content_codeunits - ELLIPSIS_CODEPOINTS:
                     fixed_length = e.length if e.offset + e.length <= content_codeunits else content_codeunits - e.offset - ELLIPSIS_CODEPOINTS
                     entities.append(
                         telegram.MessageEntity(type=e.type,
@@ -45,7 +45,7 @@ class Message:
                                                length=fixed_length,
                                                url=e.url))
 
-        if len(footer):
+        if footer:
             entities.append(
                 telegram.MessageEntity(type=telegram.MessageEntity.TEXT_LINK,
                                        offset=utf16_code_units_in_text(title) + utf16_code_units_in_text(content) + 2,
@@ -56,7 +56,7 @@ class Message:
         return title + content + footer, entities
 
     def _get_title(self):
-        if self.title is None or len(self.title) == 0:
+        if not self.title:
             return ''
 
         return f'{self.title}\n\n'
@@ -65,7 +65,7 @@ class Message:
         if not self.source_url:
             return ''
 
-        if not self.title or not self.text.text:
+        if self.title or self.text.text:
             return f'\n\nsource'
         else:
             return "source"

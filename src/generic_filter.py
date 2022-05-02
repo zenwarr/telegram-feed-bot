@@ -52,7 +52,7 @@ def html_to_text_with_entities(html_content):
 
 
 def append_newline(text):
-    if len(text) == 0:
+    if not text:
         return text
 
     return text + "\n\n" if not text.endswith("\n") else text
@@ -62,7 +62,7 @@ def append_with_collapsing_space(text, suffix):
     if not text:
         return suffix.lstrip()
 
-    if len(suffix) == 0:
+    if not suffix:
         return text
 
     # if suffix has only spaces, append missing space to text and return it
