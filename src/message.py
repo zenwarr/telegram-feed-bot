@@ -19,6 +19,9 @@ class Message:
     post_id: str = None
     link_preview: bool = True
 
+    # if True, footer with source link is going to be appended to the end of the message
+    link_footer: bool = True
+
     def get_text_with_entities(self, max_length=None):
         entities = []
 
@@ -65,7 +68,7 @@ class Message:
         return f'{self.title}\n\n' if self._get_text() else self.title
 
     def _get_footer(self):
-        if not self.source_url:
+        if not self.source_url or not self.link_footer:
             return ''
 
         if self.title or self.text.text:
