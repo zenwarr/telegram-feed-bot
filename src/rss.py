@@ -59,7 +59,6 @@ def fetch_feed(feed):
         msg.feed = feed_id
         msg.post_id = post_id
 
-        print('sending post "{}"'.format(post_id, feed_id))
         queue_msg(msg, feed.get("channel"))
 
     update_fetch_date(feed_id, new_last_fetch)

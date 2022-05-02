@@ -56,7 +56,6 @@ def fetch_subreddit(feed):
         if is_post_sent(reddit_name, post.get("link")):
             continue
 
-        print('sending post "{}" from "{}"'.format(post.get("link"), reddit_name))
         msg = Message(type=post.get("link_type"), res_url=post.get("link"), title=post.get("title"), text="", source_url=post.get("permalink"))
         msg.feed = reddit_name
         msg.post_id = post.get("link")
