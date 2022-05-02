@@ -128,6 +128,9 @@ def is_valid_url(url):
 
     try:
         result = urlparse(url)
-        return result.scheme in ["http", "https"] and result.netloc != ""
+        if "." not in result.hostname:
+            return False
+
+        return result.scheme in ["http", "https"] and result.hostname != ""
     except:
         return False

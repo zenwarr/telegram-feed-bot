@@ -62,10 +62,10 @@ class Message:
         return f'{self.title}\n\n'
 
     def _get_footer(self):
-        if self.source_url is None or len(self.source_url) == 0:
+        if not self.source_url:
             return ''
 
-        if len(self.title) or len(self.text.text):
+        if not self.title or not self.text.text:
             return f'\n\nsource'
         else:
             return "source"
