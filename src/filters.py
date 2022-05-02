@@ -23,23 +23,23 @@ def xkcd_content_filter(entry):
         return Message(type="image", title=entry.title, source_url=entry.link, text=image_alt, res_url=image_url)
 
 
-HABR_LINK_TEXTS = ["Читать далее", "Читать дальше →"]
+# HABR_LINK_TEXTS = ["Читать далее", "Читать дальше →"]
 
 
 # Example filter: parse html and extract text
 def habr_content_filter(entry):
     text = html_to_text_with_entities(entry.summary)
 
-    for e in text.entities:
-        if e.type == telegram.MessageEntity.TEXT_LINK:
-            e_start = utf16_codeunit_index_to_pos(text.text, e.offset)
-            e_end = utf16_codeunit_index_to_pos(text.text, e.offset + e.length)
-            e_text = text.text[e_start:e_end]
-            if e_text in HABR_LINK_TEXTS:
-                del text.entities[text.entities.index(e)]
-                text.text = text.text[:e_start] + text.text[e_end:]
-
-    rtrim_text(text)
+    # for e in text.entities:
+    #     if e.type == telegram.MessageEntity.TEXT_LINK:
+    #         e_start = utf16_codeunit_index_to_pos(text.text, e.offset)
+    #         e_end = utf16_codeunit_index_to_pos(text.text, e.offset + e.length)
+    #         e_text = text.text[e_start:e_end]
+    #         if e_text in HABR_LINK_TEXTS:
+    #             del text.entities[text.entities.index(e)]
+    #             text.text = text.text[:e_start] + text.text[e_end:]
+    #
+    # rtrim_text(text)
 
     link = entry.link
     # remove url parameters from link
