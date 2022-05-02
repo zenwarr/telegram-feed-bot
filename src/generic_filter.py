@@ -41,6 +41,13 @@ def html_to_text_with_entities(html_content):
 
     walker(soup)
 
+    result.text = result.text.rstrip()
+    new_result_codepoints = utf16_code_units_in_text(result.text)
+    result.entities = list(filter(lambda e: e.offset < new_result_codepoints, result.entities))
+    for e in result.entities:
+        if e.offset + e.length > new_result_codepoints:
+            e.length = new_result_codepoints - e.offset
+
     return result
 
 
