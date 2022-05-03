@@ -60,7 +60,7 @@ def fetch_feed(feed):
         msg.post_id = post_id
         msg.link_preview = feed.get("link_preview", True)
         msg.enable_footer = feed.get("footer", True)
-        msg.title_link = feed.get("title_link", False)
+        msg.title_link = feed.get("title_link", True)
 
         queue_msg(msg, feed.get("channel"))
 

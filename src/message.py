@@ -24,7 +24,7 @@ class Message:
 
     # if True, the title itself is going to be a link to source post.
     # If this option is enabled, footer is going to be hidden automatically.
-    title_link: bool = False
+    title_link: bool = True
 
     def get_text_with_entities(self, max_length=None):
         entities = []
