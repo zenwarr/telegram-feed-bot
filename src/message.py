@@ -22,13 +22,24 @@ class Message:
     # if True, footer with source link is going to be appended to the end of the message
     enable_footer: bool = True
 
+    # if True, the title itself is going to be a link to source post.
+    # If this option is enabled, footer is going to be hidden automatically.
+    title_link: bool = False
+
     def get_text_with_entities(self, max_length=None):
         entities = []
 
         title = self._get_title()
         if title:
-            entities.append(telegram.MessageEntity(type=telegram.MessageEntity.BOLD, offset=0,
+            entities.append(telegram.MessageEntity(type=telegram.MessageEntity.BOLD,
+                                                   offset=0,
                                                    length=utf16_codeunits_in_text(title)))
+
+        if self.title_link and self.source_url:
+            entities.append(telegram.MessageEntity(type=telegram.MessageEntity.TEXT_LINK,
+                                                   offset=0,
+                                                   length=utf16_codeunits_in_text(title),
+                                                   url=self.source_url))
 
         footer = self._get_footer()
         content = self._get_text()
@@ -68,7 +79,7 @@ class Message:
         return f'{self.title}\n\n' if self._get_text() else self.title
 
     def _get_footer(self):
-        if not self.source_url or not self.enable_footer:
+        if not self.source_url or not self.enable_footer or self.title_link:
             return ''
 
         if self.title or self.text.text:
