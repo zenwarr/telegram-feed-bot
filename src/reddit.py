@@ -59,6 +59,8 @@ def fetch_subreddit(feed):
         msg = Message(type=post.get("link_type"), res_url=post.get("link"), title=post.get("title"), text="", source_url=post.get("permalink"))
         msg.feed = reddit_name
         msg.post_id = post.get("link")
+        msg.enable_footer = feed.get("footer", True)
+        msg.title_link = feed.get("title_link", False)
 
         queue_msg(msg, feed.get("channel"))
 
