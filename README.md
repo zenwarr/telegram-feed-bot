@@ -3,6 +3,8 @@ It can also collect top posts from a subreddit and post them to a telegram chann
 
 It can save original post formatting (to the extent supported by Telegram).
 
+![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
+
 ## Feed configuration
 
 Configuration is stored in `data/config.yaml` file.
