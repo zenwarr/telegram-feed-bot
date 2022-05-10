@@ -91,10 +91,13 @@ For example:
 TELEGRAM_BOT_TOKEN=my_telegram_bot_token
 ```
 
-## Running it
+## Deployment
+
+You can use an example provided in `prod.docker-compose.yml` file for deployment.
+Create `docker-compose.yml` file and paste contents from `prod.docker-compose.yml` file into it.
+You should also create `data` (for keeping `data/.env` and `data/config.yaml`) and `filters` (for keeping custom filters) directories. 
 
 After setting up feeds in config and configuring bot token, you can start the bot with docker-compose.
-For example:
 
 ```sh
 docker-compose up --build

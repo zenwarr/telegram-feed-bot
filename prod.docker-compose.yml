@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  app:
+    image: ghcr.io/zenwarr/telegram-rss-bot:latest
+    volumes:
+      - ./data:/data
+      - ./filters:/src/custom_filters
+    environment:
+      - ENV_FILE_PATH=/data/.env
+    restart: unless-stopped
