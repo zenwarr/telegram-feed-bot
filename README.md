@@ -1,6 +1,8 @@
 This bot posts rss feeds to telegram channels.
 It can also collect top posts from a subreddit and post them to a telegram channel hourly.
 
+It can save original post formatting (to the extent supported by Telegram).
+
 ## Feed configuration
 
 Configuration is stored in `data/config.yaml` file.
