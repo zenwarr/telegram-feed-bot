@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-from text_with_entities import TextWithEntities
 import telegram
 
-from utils import utf16_codeunits_in_text
+from src.text_with_entities import TextWithEntities
+from src.utils import utf16_codeunits_in_text
 
 ELLIPSIS = "…"
 ELLIPSIS_CODEPOINTS = utf16_codeunits_in_text(ELLIPSIS)

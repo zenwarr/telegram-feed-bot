@@ -2,10 +2,11 @@ import datetime
 import re
 from dataclasses import dataclass
 import feedparser
-from config import get_config
-from filters import get_content_filter
-from post_db import is_post_sent, update_fetch_date
-from tg import queue_msg, get_tg_queue
+
+from src.config import get_config
+from src.filters import get_content_filter
+from src.post_db import is_post_sent, update_fetch_date
+from src.tg import queue_msg, get_tg_queue
 
 
 def fetch_feeds():

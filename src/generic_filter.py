@@ -1,9 +1,10 @@
 from bs4 import BeautifulSoup, Comment, Tag
 import telegram
-from message import Message
-from text_with_entities import TextWithEntities
-from utils import utf16_codeunits_in_text
 from urllib.parse import urlparse
+
+from src.message import Message
+from src.text_with_entities import TextWithEntities
+from src.utils import utf16_codeunits_in_text
 
 
 def generic_content_filter(entry):

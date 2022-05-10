@@ -1,12 +1,11 @@
 import os
-
 import schedule
 import time
 import signal
 import sys
 
-from reddit import fetch_reddit_feeds
-from rss import fetch_feeds
+from src.reddit import fetch_reddit_feeds
+from src.rss import fetch_feeds
 from dotenv import load_dotenv
 
 from post_db import close_db

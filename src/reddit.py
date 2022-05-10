@@ -1,10 +1,10 @@
 import requests
-
-from config import get_config
-from message import Message
-from post_db import is_post_sent, add_post
-from tg import queue_msg, get_tg_queue
 from urllib.parse import urlparse
+
+from src.config import get_config
+from src.message import Message
+from src.post_db import is_post_sent
+from src.tg import queue_msg, get_tg_queue
 
 
 def get_top_subreddit_posts(subreddit, limit):

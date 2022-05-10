@@ -6,6 +6,7 @@ services:
       context: .
     volumes:
       - ./data:/data
+      - ./filters:/src/custom_filters
     environment:
       - ENV_FILE_PATH=/data/.env
     restart: unless-stopped

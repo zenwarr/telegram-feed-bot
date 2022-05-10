@@ -1,11 +1,10 @@
 import time
-
 import os
-
 import telegram
 from telegram.ext import ExtBot
-from message import Message
-from post_db import add_post
+
+from src.message import Message
+from src.post_db import add_post
 
 
 def get_tg_bot() -> ExtBot:

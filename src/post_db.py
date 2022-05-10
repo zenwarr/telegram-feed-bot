@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-from config import get_data_dir
+from src.config import get_data_dir
 
 
 def get_post_db():
