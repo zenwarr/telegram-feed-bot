@@ -60,7 +60,7 @@ def fetch_feed(feed):
 
         instant_view_rhash = feed.get("instant_view_rhash", None)
         if instant_view_rhash is not None:
-            msg.source_url = get_instant_view_link(instant_view_rhash, msg.source_url)
+            msg.title_link_preview = get_instant_view_link(instant_view_rhash, msg.source_url)
 
         msg.feed = feed_id
         msg.post_id = post_id

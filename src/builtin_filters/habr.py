@@ -26,9 +26,4 @@ def content_filter(entry):
     # remove url parameters from link
     link = re.sub("\\?.*", "", link)
 
-    buttons = [
-        Button(text="Статья", url=link),
-        Button(text="Комментарии", url=link + "#comments")
-    ]
-
-    return Message(type="text", title=entry.title, source_url=link, text=text, button_links=buttons)
+    return Message(type="text", title=entry.title, source_url=link, text=text)

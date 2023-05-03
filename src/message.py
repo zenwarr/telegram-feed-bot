@@ -35,6 +35,10 @@ class Message:
     # If this option is enabled, footer is going to be hidden automatically.
     title_link: bool = True
 
+    # if set to non-None value, a small anchor emoji is going to be added to the title link
+    # this emoji is going to be a link that is going to be picked by telegram for preview instead of the `title_link`
+    title_link_preview: str = None
+
     button_links: list[Button] = None
 
     def get_reply_markup(self):
@@ -53,10 +57,21 @@ class Message:
                                                    offset=0,
                                                    length=utf16_codeunits_in_text(title)))
 
-        if self.title_link and self.source_url:
+        original_title_codepoint_count = utf16_codeunits_in_text(title)
+        title_link_offset = 0
+        if self.title_link_preview and title:
+            title_link_icon = "🗒"
+            title = f"{title_link_icon} {title}"
             entities.append(telegram.MessageEntity(type=telegram.MessageEntity.TEXT_LINK,
                                                    offset=0,
-                                                   length=utf16_codeunits_in_text(title),
+                                                   length=utf16_codeunits_in_text(title_link_icon),
+                                                   url=self.title_link_preview))
+            title_link_offset += utf16_codeunits_in_text(title_link_icon + " ")
+
+        if self.title_link and self.source_url:
+            entities.append(telegram.MessageEntity(type=telegram.MessageEntity.TEXT_LINK,
+                                                   offset=title_link_offset,
+                                                   length=original_title_codepoint_count,
                                                    url=self.source_url))
 
         footer = self._get_footer()
