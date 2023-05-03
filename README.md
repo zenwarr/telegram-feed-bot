@@ -49,6 +49,11 @@ feeds:
   # Optional, false by default
   # If true, telegram messages will have footer with clickable link to an original post
   footer: true
+  
+  # Optional, none by default
+  # If set, links to original posts for this feed are going to be replaced with links to
+  # t.me/iv?url=original_link&rhash=instant_view_rhash, so you can use your own instant view templates
+  instant_view_rhash: "some_rhash"
 
 reddit:
 - name: funny # Name of a subreddit
