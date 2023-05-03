@@ -49,7 +49,8 @@ def send_msg(msg: Message, channel: str):
         tg_bot.send_message(chat_id=channel,
                             text=text,
                             entities=entities,
-                            disable_web_page_preview=not msg.link_preview)
+                            disable_web_page_preview=not msg.link_preview,
+                            reply_markup=msg.get_reply_markup())
     elif msg.type == "image" and not msg.res_url.endswith(".gif"):
         tg_bot.send_photo(chat_id=channel,
                           photo=msg.res_url,

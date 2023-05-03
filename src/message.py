@@ -9,6 +9,15 @@ ELLIPSIS_CODEPOINTS = utf16_codeunits_in_text(ELLIPSIS)
 
 
 @dataclass
+class Button:
+    text: str
+    url: str
+
+    def get_inline_keyboard_button(self):
+        return telegram.InlineKeyboardButton(text=self.text, url=self.url)
+
+
+@dataclass
 class Message:
     type: str
     title: str = None
@@ -25,6 +34,15 @@ class Message:
     # if True, the title itself is going to be a link to source post.
     # If this option is enabled, footer is going to be hidden automatically.
     title_link: bool = True
+
+    button_links: list[Button] = None
+
+    def get_reply_markup(self):
+        if not self.button_links:
+            return None
+
+        buttons = [b.get_inline_keyboard_button() for b in self.button_links]
+        return telegram.InlineKeyboardMarkup([buttons])
 
     def get_text_with_entities(self, max_length=None):
         entities = []
