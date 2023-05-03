@@ -24,6 +24,6 @@ def content_filter(entry):
 
     link = entry.link
     # remove url parameters from link
-    link = re.sub("\?.*", "", link)
+    link = re.sub("\\?.*", "", link)
 
     return Message(type="text", title=entry.title, source_url=link, text=text)
