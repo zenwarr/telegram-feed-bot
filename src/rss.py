@@ -5,6 +5,7 @@ import feedparser
 
 from src.config import get_config
 from src.filters import get_content_filter
+from src.instant_view import get_instant_view_link
 from src.post_db import is_post_sent, update_fetch_date
 from src.tg import queue_msg, get_tg_queue
 
@@ -56,6 +57,10 @@ def fetch_feed(feed):
 
         if not matches_conditions(feed, msg):
             continue
+
+        instant_view_rhash = feed.get("instant_view_rhash", None)
+        if instant_view_rhash is not None:
+            msg.source_url = get_instant_view_link(instant_view_rhash, msg.source_url)
 
         msg.feed = feed_id
         msg.post_id = post_id
