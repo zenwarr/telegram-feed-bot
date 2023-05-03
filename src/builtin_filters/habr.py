@@ -1,6 +1,6 @@
 import telegram
 import re
-from src.message import Message
+from src.message import Message, Button
 from src.utils import utf16_codeunits_in_text, utf16_codeunit_index_to_pos
 from src.generic_filter import html_to_text_with_entities, rtrim_text
 
@@ -26,4 +26,9 @@ def content_filter(entry):
     # remove url parameters from link
     link = re.sub("\\?.*", "", link)
 
-    return Message(type="text", title=entry.title, source_url=link, text=text)
+    buttons = [
+        Button(text="Статья", url=link),
+        Button(text="Комментарии", url=link + "#comments")
+    ]
+
+    return Message(type="text", title=entry.title, source_url=link, text=text, button_links=buttons)
