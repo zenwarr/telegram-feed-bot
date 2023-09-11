@@ -20,9 +20,10 @@ def fetch_feeds():
         except Exception as e:
             print("error fetching feed {}: {}".format(feed.get("url"), e))
 
+    print("feeds fetched, starting to process queue")
     get_tg_queue().process()
 
-    print("fetching feeds done, waiting till next scheduled run")
+    print("feeds are processed, waiting till next scheduled run")
 
 
 def fetch_feed(feed):
