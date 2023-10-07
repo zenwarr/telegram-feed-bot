@@ -7,6 +7,8 @@ services:
     volumes:
       - ./data:/data
       - ./filters:/src/custom_filters
+    ports:
+      - 127.0.0.1:8080:8080
     environment:
       - ENV_FILE_PATH=/data/.env
     restart: unless-stopped

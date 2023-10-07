@@ -6,6 +6,7 @@ import sys
 import time
 from dotenv import load_dotenv
 
+from src.metrics import init_metrics
 from src.post_db import close_db
 from src.reddit import fetch_reddit_feeds
 from src.rss import fetch_feeds
@@ -23,6 +24,7 @@ def run():
     env_file_path = os.environ.get("ENV_FILE_PATH")
     load_dotenv(env_file_path)
 
+    init_metrics()
     fetch_feeds()
 
     schedule.every(10).minutes.do(fetch_feeds)

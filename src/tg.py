@@ -4,6 +4,7 @@ import telegram
 import time
 from telegram.ext import ExtBot
 
+from src import metrics
 from src.message import Message
 from src.post_db import add_post
 
@@ -42,6 +43,7 @@ class TelegramQueue:
         self.queue = []
 
 
+@metrics.with_operation_counter(metrics.MESSAGES_SENT)
 def send_msg(msg: Message, channel: str):
     text, entities = msg.get_text_with_entities(
         telegram.MAX_MESSAGE_LENGTH

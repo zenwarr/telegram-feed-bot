@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 import feedparser
 
+from src import metrics
 from src.config import get_config
 from src.filters import get_content_filter
 from src.instant_view import get_instant_view_link
@@ -27,6 +28,7 @@ def fetch_feeds():
     print("feeds are processed, waiting till next scheduled run")
 
 
+@metrics.with_operation_counter(metrics.FEEDS_FETCHED)
 def fetch_feed(feed):
     feed_id = feed.get("id") or feed.get("url")
     print("fetching feed {}".format(feed_id))
@@ -75,6 +77,7 @@ def fetch_feed(feed):
         msg.title_link = feed.get("title_link", True)
 
         queue_msg(msg, feed.get("channel"))
+        metrics.MESSAGES_QUEUED.inc()
 
     update_fetch_date(feed_id, new_last_fetch)
 
