@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "rss"
+version = "0.1.0"
+description = ""
+authors = ["zenwarr <zenw@yandex.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+apscheduler = "3.6.3"
+beautifulsoup4 = "4.10.0"
+cachetools = "4.2.2"
+certifi = "2021.10.8"
+charset-normalizer = "2.0.11"
+feedparser = "6.0.8"
+idna = "3.3"
+prawcore = "2.3.0"
+python-dotenv = "0.19.2"
+python-telegram-bot = "13.11"
+pytz = "2021.3"
+pytz-deprecation-shim = "0.1.0.post0"
+pyyaml = "6.0.1"
+requests = "2.27.1"
+schedule = "1.1.0"
+sgmllib3k = "1.0.0"
+six = "1.16.0"
+soupsieve = "2.3.1"
+tornado = "6.1"
+tzdata = "2021.5"
+tzlocal = "4.1"
+update-checker = "0.18.0"
+urllib3 = "1.26.8"
+websocket-client = "1.2.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

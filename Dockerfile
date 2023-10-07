@@ -1,13 +1,18 @@
-FROM python:3.10.2-alpine3.15
+FROM python:3.11.6-alpine3.18 as builder
 
-ADD ./src/requirements.txt /app/src/requirements.txt
+ENV PYTHONUNBUFFERED=1
+RUN pip install poetry && poetry config virtualenvs.in-project true
 
-RUN cd /app/src && pip install -r requirements.txt
+WORKDIR /app
+ADD pyproject.toml poetry.lock /app/
+RUN cd /app && poetry install
 
-ADD ./src /app/src
+FROM python:3.11.6-alpine3.18
 
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY . /app
+COPY --from=builder /app/.venv /app/.venv
 USER 1000
 
-ENV PYTHONPATH "${PYTHONPATH}:/app"
-
-ENTRYPOINT [ "python", "-u", "/app/src/main.py" ]
+ENTRYPOINT [ "/app/.venv/bin/python", "-u", "/app/main.py" ]

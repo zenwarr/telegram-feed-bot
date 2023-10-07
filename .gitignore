@@ -2,6 +2,7 @@
 data/posts.db
 data/.env
 data/config.yaml
+.env
 __pycache__
 filters/**
 !.gitkeep

@@ -1,0 +1,6 @@
+.git
+.env
+.gitignore
+docker-compose.yml
+prod.docker-compose.yml
+Dockerfile

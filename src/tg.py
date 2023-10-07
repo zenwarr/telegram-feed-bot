@@ -42,30 +42,36 @@ class TelegramQueue:
 
 
 def send_msg(msg: Message, channel: str):
-    text, entities = msg.get_text_with_entities(telegram.MAX_MESSAGE_LENGTH if msg.type == 'text' else telegram.MAX_CAPTION_LENGTH)
+    text, entities = msg.get_text_with_entities(
+        telegram.MAX_MESSAGE_LENGTH
+        if msg.type == "text"
+        else telegram.MAX_CAPTION_LENGTH
+    )
     tg_bot = get_tg_bot()
 
     if msg.type == "text":
-        tg_bot.send_message(chat_id=channel,
-                            text=text,
-                            entities=entities,
-                            disable_web_page_preview=not msg.link_preview,
-                            reply_markup=msg.get_reply_markup())
+        tg_bot.send_message(
+            chat_id=channel,
+            text=text,
+            entities=entities,
+            disable_web_page_preview=not msg.link_preview,
+            reply_markup=msg.get_reply_markup(),
+        )
     elif msg.type == "image" and not msg.res_url.endswith(".gif"):
-        tg_bot.send_photo(chat_id=channel,
-                          photo=msg.res_url,
-                          caption=text,
-                          caption_entities=entities)
+        tg_bot.send_photo(
+            chat_id=channel, photo=msg.res_url, caption=text, caption_entities=entities
+        )
     elif msg.type == "image" and msg.res_url.endswith(".gif"):
-        tg_bot.send_animation(chat_id=channel,
-                              animation=msg.res_url,
-                              caption=text,
-                              caption_entities=entities)
+        tg_bot.send_animation(
+            chat_id=channel,
+            animation=msg.res_url,
+            caption=text,
+            caption_entities=entities,
+        )
     elif msg.type == "video":
-        tg_bot.send_video(chat_id=channel,
-                          video=msg.res_url,
-                          caption=text,
-                          caption_entities=entities)
+        tg_bot.send_video(
+            chat_id=channel, video=msg.res_url, caption=text, caption_entities=entities
+        )
 
 
 def get_tg_queue():
