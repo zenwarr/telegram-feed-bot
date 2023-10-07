@@ -1,14 +1,14 @@
 import os
-import schedule
-import time
 import signal
-import sys
 
-from src.reddit import fetch_reddit_feeds
-from src.rss import fetch_feeds
+import schedule
+import sys
+import time
 from dotenv import load_dotenv
 
 from src.post_db import close_db
+from src.reddit import fetch_reddit_feeds
+from src.rss import fetch_feeds
 
 
 def exit_program():

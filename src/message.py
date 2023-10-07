@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 import telegram
 
 from src.text_with_entities import TextWithEntities
@@ -53,51 +54,77 @@ class Message:
 
         title = self._get_title()
         if title:
-            entities.append(telegram.MessageEntity(type=telegram.MessageEntity.BOLD,
-                                                   offset=0,
-                                                   length=utf16_codeunits_in_text(title)))
+            entities.append(
+                telegram.MessageEntity(
+                    type=telegram.MessageEntity.BOLD,
+                    offset=0,
+                    length=utf16_codeunits_in_text(title),
+                )
+            )
 
         original_title_codepoint_count = utf16_codeunits_in_text(title)
         title_link_offset = 0
         if self.title_link_preview and title:
             title_link_icon = "🗒"
             title = f"{title_link_icon} {title}"
-            entities.append(telegram.MessageEntity(type=telegram.MessageEntity.TEXT_LINK,
-                                                   offset=0,
-                                                   length=utf16_codeunits_in_text(title_link_icon),
-                                                   url=self.title_link_preview))
+            entities.append(
+                telegram.MessageEntity(
+                    type=telegram.MessageEntity.TEXT_LINK,
+                    offset=0,
+                    length=utf16_codeunits_in_text(title_link_icon),
+                    url=self.title_link_preview,
+                )
+            )
             title_link_offset += utf16_codeunits_in_text(title_link_icon + " ")
 
         if self.title_link and self.source_url:
-            entities.append(telegram.MessageEntity(type=telegram.MessageEntity.TEXT_LINK,
-                                                   offset=title_link_offset,
-                                                   length=original_title_codepoint_count,
-                                                   url=self.source_url))
+            entities.append(
+                telegram.MessageEntity(
+                    type=telegram.MessageEntity.TEXT_LINK,
+                    offset=title_link_offset,
+                    length=original_title_codepoint_count,
+                    url=self.source_url,
+                )
+            )
 
         footer = self._get_footer()
         content = self._get_text()
 
         total_length = len(title) + len(content) + len(footer)
         if max_length is not None and total_length > max_length:
-            content = content[:max_length - len(footer) - len(title) - len(ELLIPSIS)] + ELLIPSIS
+            content = (
+                content[: max_length - len(footer) - len(title) - len(ELLIPSIS)]
+                + ELLIPSIS
+            )
 
         if isinstance(self.text, TextWithEntities):
             content_codeunits = utf16_codeunits_in_text(content)
             for e in self.text.entities:
                 if e.offset < content_codeunits - ELLIPSIS_CODEPOINTS:
-                    fixed_length = e.length if e.offset + e.length <= content_codeunits else content_codeunits - e.offset - ELLIPSIS_CODEPOINTS
+                    fixed_length = (
+                        e.length
+                        if e.offset + e.length <= content_codeunits
+                        else content_codeunits - e.offset - ELLIPSIS_CODEPOINTS
+                    )
                     entities.append(
-                        telegram.MessageEntity(type=e.type,
-                                               offset=e.offset + utf16_codeunits_in_text(title),
-                                               length=fixed_length,
-                                               url=e.url))
+                        telegram.MessageEntity(
+                            type=e.type,
+                            offset=e.offset + utf16_codeunits_in_text(title),
+                            length=fixed_length,
+                            url=e.url,
+                        )
+                    )
 
         if footer:
             entities.append(
-                telegram.MessageEntity(type=telegram.MessageEntity.TEXT_LINK,
-                                       offset=utf16_codeunits_in_text(title) + utf16_codeunits_in_text(content) + 2,
-                                       length=utf16_codeunits_in_text(footer) - 2,
-                                       url=self.source_url)
+                telegram.MessageEntity(
+                    type=telegram.MessageEntity.TEXT_LINK,
+                    offset=utf16_codeunits_in_text(title)
+                    + utf16_codeunits_in_text(content)
+                    + 2,
+                    length=utf16_codeunits_in_text(footer) - 2,
+                    url=self.source_url,
+                )
             )
 
         return title + content + footer, entities
@@ -107,15 +134,15 @@ class Message:
 
     def _get_title(self):
         if not self.title:
-            return ''
+            return ""
 
-        return f'{self.title}\n\n' if self._get_text() else self.title
+        return f"{self.title}\n\n" if self._get_text() else self.title
 
     def _get_footer(self):
         if not self.source_url or not self.enable_footer or self.title_link:
-            return ''
+            return ""
 
         if self.title or self.text.text:
-            return f'\n\nsource'
+            return f"\n\nsource"
         else:
             return "source"

@@ -1,6 +1,7 @@
 import datetime
 import re
 from dataclasses import dataclass
+
 import feedparser
 
 from src.config import get_config
@@ -14,7 +15,7 @@ def fetch_feeds():
     print("fetching feeds")
 
     config = get_config()
-    for feed in config.get('feeds', []):
+    for feed in config.get("feeds", []):
         try:
             fetch_feed(feed)
         except Exception as e:
@@ -31,7 +32,7 @@ def fetch_feed(feed):
     print("fetching feed {}".format(feed_id))
 
     new_last_fetch = datetime.datetime.now()
-    entries = feedparser.parse(feed['url'])
+    entries = feedparser.parse(feed["url"])
 
     for entry in entries.entries:
         post_id = entry.get("link")
@@ -51,7 +52,9 @@ def fetch_feed(feed):
         link = entry.get("link")
 
         content_filter = get_content_filter(feed.get("filter"))
-        msg = content_filter(FeedEntry(title=title, summary=summary, content=content, link=link))
+        msg = content_filter(
+            FeedEntry(title=title, summary=summary, content=content, link=link)
+        )
         if msg is None:
             print('malformed post "{}", content is empty'.format(post_id, feed_id))
             continue
@@ -61,7 +64,9 @@ def fetch_feed(feed):
 
         instant_view_rhash = feed.get("instant_view_rhash", None)
         if instant_view_rhash is not None:
-            msg.title_link_preview = get_instant_view_link(instant_view_rhash, msg.source_url)
+            msg.title_link_preview = get_instant_view_link(
+                instant_view_rhash, msg.source_url
+            )
 
         msg.feed = feed_id
         msg.post_id = post_id
@@ -90,7 +95,6 @@ def matches_conditions(feed, msg):
                 return False
 
     return True
-
 
 
 @dataclass

@@ -1,9 +1,9 @@
 def utf16_codeunits_in_text(text: str) -> int:
-    return len(text.encode('utf-16-le')) // 2
+    return len(text.encode("utf-16-le")) // 2
 
 
 def utf16_codeunit_index_to_pos(text: str, codeunit_index: int) -> int | None:
-    encoded = text.encode('utf-16-le')
+    encoded = text.encode("utf-16-le")
 
     word_offset = 0
     char_index = 0

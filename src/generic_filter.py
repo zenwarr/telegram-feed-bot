@@ -1,6 +1,7 @@
-from bs4 import BeautifulSoup, Comment, Tag
-import telegram
 from urllib.parse import urlparse
+
+import telegram
+from bs4 import BeautifulSoup, Comment, Tag
 
 from src.message import Message
 from src.text_with_entities import TextWithEntities
@@ -10,20 +11,28 @@ from src.utils import utf16_codeunits_in_text
 def generic_content_filter(entry):
     title_msg = html_to_text_with_entities(entry.title)
 
-    raw_content = entry.content if entry.content and len(entry.content) > len(entry.summary) else entry.summary
+    raw_content = (
+        entry.content
+        if entry.content and len(entry.content) > len(entry.summary)
+        else entry.summary
+    )
 
-    return Message(type="text",
-                   title=title_msg.text,
-                   text=html_to_text_with_entities(raw_content),
-                   source_url=entry.link)
+    return Message(
+        type="text",
+        title=title_msg.text,
+        text=html_to_text_with_entities(raw_content),
+        source_url=entry.link,
+    )
 
 
 def html_to_text_with_entities(html_content):
-    soup = BeautifulSoup(html_content, 'html.parser')
+    soup = BeautifulSoup(html_content, "html.parser")
     result = TextWithEntities(text="", entities=[])
 
     def walker(node):
-        if isinstance(node, Comment) or (isinstance(node, Tag) and node.name in IGNORE_TAGS):
+        if isinstance(node, Comment) or (
+            isinstance(node, Tag) and node.name in IGNORE_TAGS
+        ):
             return
         elif isinstance(node, str):
             result.text = append_with_collapsing_space(result.text, node)
@@ -98,11 +107,56 @@ def append_space_if_missing(text):
     return text + " " if not (text.endswith(" ") or text.endswith("\n")) else text
 
 
-INLINE_TAGS = ["a", "b", "i", "em", "strong", "span", "sub", "sup", "u", "small", "big", "del", "ins", "mark", "code",
-               "samp", "kbd", "var", "cite", "abbr", "dfn", "time", "span"]
+INLINE_TAGS = [
+    "a",
+    "b",
+    "i",
+    "em",
+    "strong",
+    "span",
+    "sub",
+    "sup",
+    "u",
+    "small",
+    "big",
+    "del",
+    "ins",
+    "mark",
+    "code",
+    "samp",
+    "kbd",
+    "var",
+    "cite",
+    "abbr",
+    "dfn",
+    "time",
+    "span",
+]
 
-IGNORE_TAGS = ["script", "style", "noscript", "meta", "link", "img", "input", "button", "label", "select", "option",
-               "figure", "video", "audio", "figcaption", "canvas", "map", "area", "svg", "math", "object", "embed"]
+IGNORE_TAGS = [
+    "script",
+    "style",
+    "noscript",
+    "meta",
+    "link",
+    "img",
+    "input",
+    "button",
+    "label",
+    "select",
+    "option",
+    "figure",
+    "video",
+    "audio",
+    "figcaption",
+    "canvas",
+    "map",
+    "area",
+    "svg",
+    "math",
+    "object",
+    "embed",
+]
 
 
 def is_block_tag(node):
@@ -124,13 +178,17 @@ tag_modifiers = {
 
 def get_modifier_for_tag(node, offset):
     if node.name in tag_modifiers:
-        return telegram.MessageEntity(type=tag_modifiers[node.name], offset=offset, length=0)
+        return telegram.MessageEntity(
+            type=tag_modifiers[node.name], offset=offset, length=0
+        )
     elif node.name == "a":
         link_url = node.get("href")
         if not is_valid_url(link_url):
             return None
 
-        return telegram.MessageEntity(type=telegram.MessageEntity.TEXT_LINK, offset=offset, url=link_url, length=0)
+        return telegram.MessageEntity(
+            type=telegram.MessageEntity.TEXT_LINK, offset=offset, url=link_url, length=0
+        )
 
     return None
 

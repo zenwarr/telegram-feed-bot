@@ -1,7 +1,7 @@
 import unittest
 
-from src.generic_filter import html_to_text_with_entities
 from src.filters import get_content_filter
+from src.generic_filter import html_to_text_with_entities
 
 
 class TestGenericFilter(unittest.TestCase):
@@ -12,13 +12,22 @@ class TestGenericFilter(unittest.TestCase):
         self.assertEqual(html_to_text_with_entities("text").text, "text")
 
     def test_inserts_newline_between_paragraphs(self):
-        self.assertEqual(html_to_text_with_entities("<p>text1</p><p>text2</p>").text, "text1\n\ntext2")
+        self.assertEqual(
+            html_to_text_with_entities("<p>text1</p><p>text2</p>").text,
+            "text1\n\ntext2",
+        )
 
     def test_does_not_insert_newline_between_inline(self):
-        self.assertEqual(html_to_text_with_entities("<span>text1</span><span>text2</span>").text, "text1text2")
+        self.assertEqual(
+            html_to_text_with_entities("<span>text1</span><span>text2</span>").text,
+            "text1text2",
+        )
 
     def test_combination_of_block_and_inline(self):
-        self.assertEqual(html_to_text_with_entities("<p>text1</p><span>text2</span>").text, "text1\n\ntext2")
+        self.assertEqual(
+            html_to_text_with_entities("<p>text1</p><span>text2</span>").text,
+            "text1\n\ntext2",
+        )
 
     def test_applies_simple_formatting(self):
         result = html_to_text_with_entities("text <b>bold text</b>")
@@ -32,9 +41,13 @@ class TestGenericFilter(unittest.TestCase):
         self.assertEqual(get_entity(result.entities[0]), ["italic", 10, 11])
 
     def test_link(self):
-        result = html_to_text_with_entities("text <a href=\"https://example.com\">link</a>")
+        result = html_to_text_with_entities(
+            'text <a href="https://example.com">link</a>'
+        )
         self.assertEqual(result.text, "text link")
-        self.assertEqual(get_entity(result.entities[0]), ["url", 5, 4, "https://example.com"])
+        self.assertEqual(
+            get_entity(result.entities[0]), ["url", 5, 4, "https://example.com"]
+        )
 
     def test_complex(self):
         result = html_to_text_with_entities(
@@ -78,15 +91,14 @@ class TestGenericFilter(unittest.TestCase):
   width: 620,
   height: 378,
   autoplay: false,
-});</script>""")
+});</script>"""
+        )
 
         self.assertEqual(result.text, "")
-
 
     def test_filter_loading(self):
         self.assertIsNotNone(get_content_filter("xkcd"))
         self.assertRaises(RuntimeError, lambda: get_content_filter("missing"))
-
 
 
 def get_entity(entity):
