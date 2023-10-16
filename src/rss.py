@@ -1,8 +1,10 @@
 import datetime
+import io
 import re
 from dataclasses import dataclass
 
 import feedparser
+import requests
 
 from src import metrics
 from src.config import get_config
@@ -10,6 +12,9 @@ from src.filters import get_content_filter
 from src.instant_view import get_instant_view_link
 from src.post_db import is_post_sent, update_fetch_date
 from src.tg import queue_msg, get_tg_queue
+
+
+REQUEST_TIMEOUT_SEC = 30.0
 
 
 def fetch_feeds():
@@ -34,7 +39,9 @@ def fetch_feed(feed):
     print("fetching feed {}".format(feed_id))
 
     new_last_fetch = datetime.datetime.now()
-    entries = feedparser.parse(feed["url"])
+
+    res = requests.get(feed["url"], timeout=REQUEST_TIMEOUT_SEC)
+    entries = feedparser.parse(io.BytesIO(res.content))
 
     for entry in entries.entries:
         post_id = entry.get("link")
